@@ -5,20 +5,26 @@ function loadRepos() {
   reposUl.removeChild(firstLiEl);
 
   fetch(`https://api.github.com/users/${username}/repos`)
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
     .then((data) => {
       data.forEach((repo) => {
-        const { full_name, html_url } = repo;
-        const liEl = createLi(html_url, full_name);
+        const liEl = createLi(repo.full_name, repo.html_url);
         reposUl.appendChild(liEl);
       });
     })
     .catch((err) => {
       console.error(err);
+      let li = createLi(err.message);
+      reposUl.appendChild(li);
     });
 }
 
-function createLi(url, fullname) {
+function createLi(fullname, url = "") {
   const liEl = document.createElement("li");
   const anchorEl = document.createElement("a");
   anchorEl.href = url;
