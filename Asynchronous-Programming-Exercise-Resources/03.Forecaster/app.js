@@ -77,7 +77,6 @@ function createCurrentConditionsEl(currentConditions) {
 function createThreeDayForecast(forecasts) {
   const forecastInfoDiv = document.createElement("div");
   forecastInfoDiv.classList.add("forecast-info");
-  console.log(forecasts);
 
   for (let forecast of forecasts) {
     let symbol = getSymbol(forecast.condition);
