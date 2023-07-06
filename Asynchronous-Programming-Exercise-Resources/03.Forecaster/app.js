@@ -14,14 +14,13 @@ async function attachEvents() {
     const currentConditions = await getCurrentConditions(location.code);
     const threeDayForecast = await getThreeDayForecast(location.code);
 
-    const forecastsDiv = createCurrentConditionsElement(currentConditions);
-    const threeDayForecastDiv = createThreeDayForecast(
-      threeDayForecast.forecast
-    );
+    const currentConditionsDiv = createCurrentConditionsEl(currentConditions);
+    const forecastsDiv = createThreeDayForecast(threeDayForecast.forecast);
+
+    currentDiv.appendChild(currentConditionsDiv);
+    upcomingDiv.appendChild(forecastsDiv);
 
     forecastDiv.style.display = "block";
-    currentDiv.appendChild(forecastsDiv);
-    upcomingDiv.appendChild(threeDayForecastDiv);
   });
 }
 
@@ -46,7 +45,7 @@ async function getThreeDayForecast(code) {
   return response.json();
 }
 
-function createCurrentConditionsElement(currentConditions) {
+function createCurrentConditionsEl(currentConditions) {
   let symbol = getSymbol(currentConditions.forecast.condition);
 
   const forecastsDiv = document.createElement("div");
