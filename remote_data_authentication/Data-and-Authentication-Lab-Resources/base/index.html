@@ -6,21 +6,21 @@
     <title>My Cookbook</title>
     <link rel="stylesheet" href="static/site.css">
     <link rel="stylesheet" href="static/recipe.css">
-    <script src="/src/app.js"></script>
+    <script src="/src/app.js" type="module"></script>
 </head>
 
 <body>
     <header>
         <h1>My Cookbook</h1>
         <nav>
-            <a class="active">Catalog</a>
+            <a id="catalogLink" class="active" href="javascript:void(0)">Catalog</a>
             <div id="user">
-                <a href="javascript:void(0)">Create Recipe</a>
+                <a id="createRecipeLink" href="javascript:void(0)">Create Recipe</a>
                 <a id="logoutBtn" href="javascript:void(0)">Logout</a>
             </div>
             <div id="guest">
-                <a href="javascript:void(0)">Login</a>
-                <a href="javascript:void(0)">Register</a>
+                <a id="loginLink" href="javascript:void(0)">Login</a>
+                <a id="registerLink" href="javascript:void(0)">Register</a>
             </div>
         </nav>
     </header>
