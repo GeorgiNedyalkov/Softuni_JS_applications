@@ -1,6 +1,9 @@
 import { showCatalog } from "./catalogPage.js";
 
+let _domElement = undefined;
+
 export async function showLogin(domElement) {
+  _domElement = domElement;
   domElement.innerHTML = "";
   domElement.innerHTML = `
    <article id="login">
@@ -38,5 +41,5 @@ async function login(e) {
   let result = await response.json();
 
   sessionStorage.setItem("accessToken", result.accessToken);
-  showCatalog(main);
+  showCatalog(_domElement);
 }
