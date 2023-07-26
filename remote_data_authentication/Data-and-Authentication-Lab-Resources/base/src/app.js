@@ -1,3 +1,5 @@
+import { showCatalog } from "./catalogPage.js";
+
 const main = document.querySelector("main");
 
 let pages = {
@@ -22,7 +24,7 @@ links.loginLink.addEventListener("click", showLogin);
 links.registerLink.addEventListener("click", showRegister);
 links.logoutLink.addEventListener("click", logout);
 
-showCatalog();
+showCatalog(main);
 
 async function logout() {
   let url = "http://localhost:3030/users/logout";
@@ -122,114 +124,4 @@ async function showLogin() {
   let form = pages.loginPage.querySelector("form");
   form.removeEventListener("submit", login);
   form.addEventListener("submit", login);
-}
-
-async function showCatalog() {
-  main.innerHTML = "";
-  const recipes = await getRecipes();
-  const cards = recipes.map(createRecipePreview);
-
-  let accessToken = sessionStorage.getItem("accessToken");
-  let guest = document.getElementById("guest");
-  let user = document.getElementById("user");
-  if (accessToken == undefined) {
-    guest.style.display = "inline-block";
-    user.style.display = "none";
-  } else {
-    user.style.display = "inline-block";
-    guest.style.display = "none";
-  }
-
-  cards.forEach((c) => main.appendChild(c));
-}
-
-async function getRecipes() {
-  const response = await fetch(
-    "http://localhost:3030/jsonstore/cookbook/recipes"
-  );
-  const recipes = await response.json();
-
-  return Object.values(recipes);
-}
-
-async function getRecipeById(id) {
-  const response = await fetch(
-    "http://localhost:3030/jsonstore/cookbook/details/" + id
-  );
-  const recipe = await response.json();
-
-  return recipe;
-}
-
-function createRecipePreview(recipe) {
-  const result = e(
-    "article",
-    { className: "preview", onClick: toggleCard },
-    e("div", { className: "title" }, e("h2", {}, recipe.name)),
-    e("div", { className: "small" }, e("img", { src: recipe.img }))
-  );
-
-  return result;
-
-  async function toggleCard() {
-    const fullRecipe = await getRecipeById(recipe._id);
-
-    result.replaceWith(createRecipeCard(fullRecipe));
-  }
-}
-
-function createRecipeCard(recipe) {
-  const result = e(
-    "article",
-    {},
-    e("h2", {}, recipe.name),
-    e(
-      "div",
-      { className: "band" },
-      e("div", { className: "thumb" }, e("img", { src: recipe.img })),
-      e(
-        "div",
-        { className: "ingredients" },
-        e("h3", {}, "Ingredients:"),
-        e(
-          "ul",
-          {},
-          recipe.ingredients.map((i) => e("li", {}, i))
-        )
-      )
-    ),
-    e(
-      "div",
-      { className: "description" },
-      e("h3", {}, "Preparation:"),
-      recipe.steps.map((s) => e("p", {}, s))
-    )
-  );
-
-  return result;
-}
-
-function e(type, attributes, ...content) {
-  const result = document.createElement(type);
-
-  for (let [attr, value] of Object.entries(attributes || {})) {
-    if (attr.substring(0, 2) == "on") {
-      result.addEventListener(attr.substring(2).toLocaleLowerCase(), value);
-    } else {
-      result[attr] = value;
-    }
-  }
-
-  content = content.reduce((a, c) => a.concat(Array.isArray(c) ? c : [c]), []);
-
-  content.forEach((e) => {
-    if (typeof e == "string" || typeof e == "number") {
-      const node = document.createTextNode(e);
-      result.appendChild(node);
-    } else {
-      result.appendChild(e);
-    }
-  });
-
-  return result;
 }
