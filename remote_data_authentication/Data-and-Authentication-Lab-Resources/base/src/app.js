@@ -13,14 +13,33 @@ let links = {
   createRecipeLink: document.getElementById("createRecipeLink"),
   loginLink: document.getElementById("loginLink"),
   registerLink: document.getElementById("registerLink"),
+  logoutLink: document.getElementById("logoutBtn"),
 };
 
 links.catalogLink.addEventListener("click", showCatalog);
 // links.createRecipeLink.addEventListener("click", showCreateRecipe);
 links.loginLink.addEventListener("click", showLogin);
 links.registerLink.addEventListener("click", showRegister);
+links.logoutLink.addEventListener("click", logout);
 
 showCatalog();
+
+async function logout() {
+  let url = "http://localhost:3030/users/logout";
+  let settings = {
+    method: "GET",
+    headers: {
+      "X-Authorization": sessionStorage.getItem("accessToken"),
+    },
+  };
+
+  let response = await fetch(url, settings);
+
+  if (response.status === 204) {
+    sessionStorage.removeItem("accessToken");
+    showCatalog();
+  }
+}
 
 async function register(e) {
   e.preventDefault();
@@ -111,7 +130,6 @@ async function showCatalog() {
   const cards = recipes.map(createRecipePreview);
 
   let accessToken = sessionStorage.getItem("accessToken");
-  console.log(accessToken);
   let guest = document.getElementById("guest");
   let user = document.getElementById("user");
   if (accessToken == undefined) {
