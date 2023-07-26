@@ -19,6 +19,6 @@ links.catalogLink.addEventListener("click", () => showCatalog(main));
 // links.createRecipeLink.addEventListener("click", showCreateRecipe);
 links.loginLink.addEventListener("click", () => showLogin(main));
 links.registerLink.addEventListener("click", () => showRegister(main));
-links.logoutLink.addEventListener("click", logout);
+links.logoutLink.addEventListener("click", () => logout(main));
 
 showCatalog(main);

@@ -1,6 +1,6 @@
 import { showCatalog } from "./catalogPage.js";
 
-export async function logout() {
+export async function logout(domElement) {
   let url = "http://localhost:3030/users/logout";
   let settings = {
     method: "GET",
@@ -13,6 +13,6 @@ export async function logout() {
 
   if (response.status === 204) {
     sessionStorage.removeItem("accessToken");
-    showCatalog(main);
+    showCatalog(domElement);
   }
 }
