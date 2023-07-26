@@ -18,9 +18,59 @@ let links = {
 links.catalogLink.addEventListener("click", showCatalog);
 // links.createRecipeLink.addEventListener("click", showCreateRecipe);
 links.loginLink.addEventListener("click", showLogin);
-// links.registerLink.addEventListener("click", showRegister);
+links.registerLink.addEventListener("click", showRegister);
 
 showCatalog();
+
+async function register(e) {
+  e.preventDefault();
+  let form = e.target;
+  let formData = new FormData(form);
+
+  let rePass = formData.get("rePass");
+  let password = formData.get("password");
+
+  // validate values are not empty
+  if (password !== rePass) {
+    return alert("The passwords need to match");
+  }
+
+  let url = "http://localhost:3030/users/register";
+  let settings = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: formData.get("email"),
+      password: formData.get("password"),
+    }),
+  };
+
+  let response = await fetch(url, settings);
+
+  try {
+    if (response.status === 200) {
+      let result = await response.json();
+      sessionStorage.setItem("accessToken", result.accessToken);
+      showCatalog();
+    } else {
+      let jsonResponse = await response.json();
+      throw new Error(jsonResponse.message);
+    }
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+async function showRegister() {
+  main.innerHTML = "";
+  main.appendChild(pages.registerPage);
+
+  let form = pages.registerPage.querySelector("form");
+  form.removeEventListener("submit", register);
+  form.addEventListener("submit", register);
+}
 
 async function login(e) {
   e.preventDefault();
@@ -61,12 +111,15 @@ async function showCatalog() {
   const cards = recipes.map(createRecipePreview);
 
   let accessToken = sessionStorage.getItem("accessToken");
+  console.log(accessToken);
+  let guest = document.getElementById("guest");
+  let user = document.getElementById("user");
   if (accessToken == undefined) {
-    let guest = document.getElementById("guest");
     guest.style.display = "inline-block";
+    user.style.display = "none";
   } else {
-    let user = document.getElementById("user");
     user.style.display = "inline-block";
+    guest.style.display = "none";
   }
 
   cards.forEach((c) => main.appendChild(c));
